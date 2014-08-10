@@ -2,7 +2,14 @@ Source: urbi
 Section: unknown
 Priority: optional
 Maintainer: Michal Koutný <xm.koutny@gmail.com>
-Build-Depends: debhelper (>= 8.0.0)
+Build-Depends: debhelper (>= 8.0.0),
+  cmake, cmake-data,
+  dpkg-dev,
+  libboost-dev, libboost-filesystem-dev, libboost-regex-dev, libboost-signals-dev, libboost-thread-dev,
+  libjpeg-turbo8-dev,
+  liblocale-gettext-perl,
+  libortp-dev,
+  locales
 Standards-Version: 3.9.4
 Homepage: https://github.com/aldebaran/urbi
 #Vcs-Git: git://git.debian.org/collab-maint/urbi.git
@@ -10,7 +17,7 @@ Homepage: https://github.com/aldebaran/urbi
 
 Package: libport
 Architecture: any
-Depends: 
+Depends: ${shlibs:Depends}
 Description: <insert up to 60 chars description>
  <insert long description, indented with spaces>
 
@@ -22,7 +29,7 @@ Description: <insert up to 60 chars description>
 
 Package: urbi
 Architecture: any
-Depends: libport
+Depends: libport, ${shlibs:Depends}
 Description: <insert up to 60 chars description>
  <insert long description, indented with spaces>
 

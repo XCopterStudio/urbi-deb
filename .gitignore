@@ -1,2 +1,4 @@
 build*
 debian/tmp
+prepare*
+debian/substvars

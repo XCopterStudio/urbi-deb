@@ -28,7 +28,7 @@ binary-indep:
 binary-arch: bin-libport bin-libport-dev bin-urbi bin-urbi-dev
 
 clean: clean-binary-libport clean-binary-libport-dev clean-binary-urbi clean-binary-urbi-dev
-	rm -f build-arch binary-arch build-libport build-urbi prepare_install
+	rm -f build-arch binary-arch build-libport build-urbi prepare_binary
 	rm -rf $(LIBPORT_BUILD_DIR) $(LIBPORT_PKD_DIR)
 	rm -rf $(URBI_BUILD_DIR) $(URBI_PKD_DIR)
 
@@ -53,11 +53,12 @@ build-urbi: build-libport
 	$(MAKE) -C $(URBI_BUILD_DIR) install
 	touch $@
 
-prepare_install:
-	dh_install --sourcedir=$(MK_DIR)/debian
+prepare_binary:
+	dh_install --sourcedir=$(MK_DIR)/tmp
+	find $(MK_DIR) -type f -executable -o -name "*.so" | xargs dpkg-shlibdeps 2>/dev/null
 	touch $@
 
-bin-%: prepare_install
+bin-%: prepare_binary
 	mkdir -p $(MK_DIR)/$*/DEBIAN
 	rm -rf $(MK_DIR)/files
 	dpkg-gencontrol -p$* -P$(MK_DIR)/$*
