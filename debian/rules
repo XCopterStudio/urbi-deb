@@ -1,62 +1,67 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-PKG_NAME=xcs-ptam-dev
-
 
 MK_FILE := $(abspath $(lastword $(MAKEFILE_LIST)))
 MK_DIR := $(patsubst %/,%,$(dir $(MK_FILE)))
 
-THIRDPARTY=$(MK_DIR)/../ThirdParty/Src
-THIRDPARTY_BUILD=$(MK_DIR)/../ThirdParty/Build
-SRC_DIR=$(MK_DIR)/../Src
-BUILD_DIR=$(MK_DIR)/../Build
-PKG_ROOT=$(MK_DIR)/../$(PKG_NAME)_$(DEB_BUILD_ARCH)
-INSTALL_DIR=$(PKG_ROOT)/opt/ptam-xcs
-RELATIVIZE=$(MK_DIR)/relativize-symlinks.sh
+LIBPORT_SRC_DIR=$(MK_DIR)/../libport
+LIBPORT_BUILD_DIR=$(MK_DIR)/../build_$(DEB_BUILD_ARCH)/libport
+LIBPORT_PKG_DIR=$(MK_DIR)/tmp/libport
+LIBPORT_INS_DIR=$(LIBPORT_PKG_DIR)
+
+URBI_SRC_DIR=$(MK_DIR)/../urbi
+URBI_BUILD_DIR=$(MK_DIR)/../build_$(DEB_BUILD_ARCH)/urbi
+URBI_PKG_DIR=$(MK_DIR)/tmp/urbi
+URBI_INS_DIR=$(URBI_PKG_DIR)
 
 build: build-arch build-indep
 
 build-indep:
 
-build-arch: prepare_toon prepare_gvars prepare_cvd
-	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) && cmake $(SRC_DIR) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR)
-	make -C $(BUILD_DIR) install
-	touch $@
+build-arch: build-libport build-urbi
 
 binary: binary-arch binary-indep
 
 binary-indep:
 
-binary-arch: build-arch
-	mkdir -p $(PKG_ROOT)/DEBIAN
-	rm -f $(MK_DIR)/files
-	dpkg-gencontrol -P$(PKG_ROOT)
-	dpkg-deb -b $(PKG_ROOT) ..
+binary-arch: bin-libport bin-libport-dev bin-urbi bin-urbi-dev
+
+clean: clean-binary-libport clean-binary-libport-dev clean-binary-urbi clean-binary-urbi-dev
+	rm -f build-arch binary-arch build-libport build-urbi prepare_install
+	rm -rf $(LIBPORT_BUILD_DIR) $(LIBPORT_PKD_DIR)
+	rm -rf $(URBI_BUILD_DIR) $(URBI_PKD_DIR)
+
+#
+# Implementation
+#
+build-libport:
+	mkdir -p $(LIBPORT_BUILD_DIR)
+	cd $(LIBPORT_BUILD_DIR) && cmake $(LIBPORT_SRC_DIR)\
+	   -DCMAKE_INSTALL_PREFIX=$(LIBPORT_INS_DIR)\
+	   -DCMAKE_CXX_FLAGS="-Wno-unused-local-typedefs -DBOOST_SIGNALS_NO_DEPRECATION_WARNING"
+	$(MAKE) -C $(LIBPORT_BUILD_DIR) install
 	touch $@
 
-prepare_toon:
-	cd $(THIRDPARTY)/TooN && ./xcs-configure.sh
-	make -C $(THIRDPARTY)/TooN install
+build-urbi: build-libport
+	mkdir -p $(URBI_BUILD_DIR)
+	cd $(URBI_BUILD_DIR) && cmake $(URBI_SRC_DIR)\
+	   -DCMAKE_INSTALL_PREFIX=$(URBI_INS_DIR)\
+	   -DCMAKE_CXX_FLAGS="-Wno-unused-local-typedefs -DBOOST_SIGNALS_NO_DEPRECATION_WARNING"\
+	   -DCMAKE_PREFIX_PATH=$(LIBPORT_INS_DIR)\
+	   -DI_AM_A_ROBOT=1
+	$(MAKE) -C $(URBI_BUILD_DIR) install
 	touch $@
 
-prepare_gvars: prepare_toon
-	cd $(THIRDPARTY)/gvars && ./xcs-configure.sh
-	make -C $(THIRDPARTY)/gvars install
-	$(RELATIVIZE) $(THIRDPARTY_BUILD)/gvars/lib
+prepare_install:
+	dh_install --sourcedir=$(MK_DIR)/debian
 	touch $@
 
-prepare_cvd: prepare_gvars prepare_toon
-	cd $(THIRDPARTY)/libcvd && ./xcs-configure.sh
-	make -C $(THIRDPARTY)/libcvd install
-	$(RELATIVIZE) $(THIRDPARTY_BUILD)/libcvd/lib
-	touch $@
+bin-%: prepare_install
+	mkdir -p $(MK_DIR)/$*/DEBIAN
+	rm -rf $(MK_DIR)/files
+	dpkg-gencontrol -p$* -P$(MK_DIR)/$*
+	dpkg-deb -b $(MK_DIR)/$* ..
 
-clean:
-	rm -f build-arch binary-arch prepare_toon prepare_gvars prepare_cvd
-	rm -rf $(PKG_ROOT)
-	rm -rf $(THIRDPARTY_BUILD)
-	rm -rf $(BUILD_DIR)
-	# TODO remove .deb file
-
+clean-binary-%:
+	rm -rf $(MK_DIR)/$*
