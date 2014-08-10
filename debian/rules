@@ -15,6 +15,12 @@ URBI_BUILD_DIR=$(MK_DIR)/../build_$(DEB_BUILD_ARCH)/urbi
 URBI_PKG_DIR=$(MK_DIR)/tmp/urbi
 URBI_INS_DIR=$(URBI_PKG_DIR)
 
+MAKEFLAGS=
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+    NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+    MAKEFLAGS += -j$(NUMJOBS)
+endif
+
 build: build-arch build-indep
 
 build-indep:
@@ -41,7 +47,7 @@ build-libport:
 	   -DCMAKE_BUILD_TYPE=Release\
 	   -DCMAKE_INSTALL_PREFIX=$(LIBPORT_INS_DIR)\
 	   -DCMAKE_CXX_FLAGS="-Wno-unused-local-typedefs -DBOOST_SIGNALS_NO_DEPRECATION_WARNING"
-	$(MAKE) -C $(LIBPORT_BUILD_DIR) install
+	$(MAKE) $(MAKEFLAGS) -C $(LIBPORT_BUILD_DIR) install
 	touch $@
 
 build-urbi: build-libport
@@ -52,7 +58,7 @@ build-urbi: build-libport
 	   -DCMAKE_CXX_FLAGS="-Wno-unused-local-typedefs -DBOOST_SIGNALS_NO_DEPRECATION_WARNING"\
 	   -DCMAKE_PREFIX_PATH=$(LIBPORT_INS_DIR)\
 	   -DI_AM_A_ROBOT=1
-	$(MAKE) -C $(URBI_BUILD_DIR) install
+	$(MAKE) $(MAKEFLAGS) -C $(URBI_BUILD_DIR) install
 	touch $@
 
 prepare_binary:
