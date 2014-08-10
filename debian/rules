@@ -1,0 +1,62 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+PKG_NAME=xcs-ptam-dev
+
+
+MK_FILE := $(abspath $(lastword $(MAKEFILE_LIST)))
+MK_DIR := $(patsubst %/,%,$(dir $(MK_FILE)))
+
+THIRDPARTY=$(MK_DIR)/../ThirdParty/Src
+THIRDPARTY_BUILD=$(MK_DIR)/../ThirdParty/Build
+SRC_DIR=$(MK_DIR)/../Src
+BUILD_DIR=$(MK_DIR)/../Build
+PKG_ROOT=$(MK_DIR)/../$(PKG_NAME)_$(DEB_BUILD_ARCH)
+INSTALL_DIR=$(PKG_ROOT)/opt/ptam-xcs
+RELATIVIZE=$(MK_DIR)/relativize-symlinks.sh
+
+build: build-arch build-indep
+
+build-indep:
+
+build-arch: prepare_toon prepare_gvars prepare_cvd
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && cmake $(SRC_DIR) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR)
+	make -C $(BUILD_DIR) install
+	touch $@
+
+binary: binary-arch binary-indep
+
+binary-indep:
+
+binary-arch: build-arch
+	mkdir -p $(PKG_ROOT)/DEBIAN
+	rm -f $(MK_DIR)/files
+	dpkg-gencontrol -P$(PKG_ROOT)
+	dpkg-deb -b $(PKG_ROOT) ..
+	touch $@
+
+prepare_toon:
+	cd $(THIRDPARTY)/TooN && ./xcs-configure.sh
+	make -C $(THIRDPARTY)/TooN install
+	touch $@
+
+prepare_gvars: prepare_toon
+	cd $(THIRDPARTY)/gvars && ./xcs-configure.sh
+	make -C $(THIRDPARTY)/gvars install
+	$(RELATIVIZE) $(THIRDPARTY_BUILD)/gvars/lib
+	touch $@
+
+prepare_cvd: prepare_gvars prepare_toon
+	cd $(THIRDPARTY)/libcvd && ./xcs-configure.sh
+	make -C $(THIRDPARTY)/libcvd install
+	$(RELATIVIZE) $(THIRDPARTY_BUILD)/libcvd/lib
+	touch $@
+
+clean:
+	rm -f build-arch binary-arch prepare_toon prepare_gvars prepare_cvd
+	rm -rf $(PKG_ROOT)
+	rm -rf $(THIRDPARTY_BUILD)
+	rm -rf $(BUILD_DIR)
+	# TODO remove .deb file
+

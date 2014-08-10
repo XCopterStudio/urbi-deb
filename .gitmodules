@@ -1,0 +1,6 @@
+[submodule "urbi"]
+	path = urbi
+	url = git@github.com:aldebaran/urbi.git
+[submodule "libport"]
+	path = libport
+	url = git@github.com:aldebaran/libport.git

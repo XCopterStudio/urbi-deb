@@ -1,0 +1,33 @@
+Source: urbi
+Section: unknown
+Priority: optional
+Maintainer: Michal Koutný <xm.koutny@gmail.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+Homepage: https://github.com/aldebaran/urbi
+#Vcs-Git: git://git.debian.org/collab-maint/urbi.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/urbi.git;a=summary
+
+Package: libport
+Architecture: any
+Depends: 
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
+
+Package: libport-dev
+Architecture: any
+Depends: libport
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
+
+Package: urbi
+Architecture: any
+Depends: libport
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
+
+Package: urbi-dev
+Architecture: all
+Depends: urbi
+Description: documentation for urbi
+ <insert long description, indented with spaces>

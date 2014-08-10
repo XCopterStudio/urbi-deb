@@ -1,0 +1,5 @@
+urbi (2.8-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Michal Koutný <xm.koutny@gmail.com>  Sun, 10 Aug 2014 11:51:52 +0200
