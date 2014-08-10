@@ -18,23 +18,19 @@ Homepage: https://github.com/aldebaran/urbi
 Package: libport
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Support library for Urbi SDK
 
 Package: libport-dev
 Architecture: any
 Depends: libport
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Development files for libport library.
 
 Package: urbi
 Architecture: any
 Depends: libport, ${shlibs:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: SDK for robotics
 
 Package: urbi-dev
 Architecture: all
 Depends: urbi
-Description: documentation for urbi
- <insert long description, indented with spaces>
+Description: Development files for Urbi SDK

@@ -38,6 +38,7 @@ clean: clean-binary-libport clean-binary-libport-dev clean-binary-urbi clean-bin
 build-libport:
 	mkdir -p $(LIBPORT_BUILD_DIR)
 	cd $(LIBPORT_BUILD_DIR) && cmake $(LIBPORT_SRC_DIR)\
+	   -DCMAKE_BUILD_TYPE=Release\
 	   -DCMAKE_INSTALL_PREFIX=$(LIBPORT_INS_DIR)\
 	   -DCMAKE_CXX_FLAGS="-Wno-unused-local-typedefs -DBOOST_SIGNALS_NO_DEPRECATION_WARNING"
 	$(MAKE) -C $(LIBPORT_BUILD_DIR) install
@@ -46,6 +47,7 @@ build-libport:
 build-urbi: build-libport
 	mkdir -p $(URBI_BUILD_DIR)
 	cd $(URBI_BUILD_DIR) && cmake $(URBI_SRC_DIR)\
+	   -DCMAKE_BUILD_TYPE=Release\
 	   -DCMAKE_INSTALL_PREFIX=$(URBI_INS_DIR)\
 	   -DCMAKE_CXX_FLAGS="-Wno-unused-local-typedefs -DBOOST_SIGNALS_NO_DEPRECATION_WARNING"\
 	   -DCMAKE_PREFIX_PATH=$(LIBPORT_INS_DIR)\
