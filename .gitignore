@@ -2,3 +2,5 @@ build*
 debian/tmp
 prepare*
 debian/substvars
+debian/files
+debian/*.log

@@ -32,5 +32,5 @@ Description: SDK for robotics
 
 Package: urbi-dev
 Architecture: all
-Depends: urbi
+Depends: urbi, libport-dev
 Description: Development files for Urbi SDK
