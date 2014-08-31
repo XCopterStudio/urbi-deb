@@ -35,6 +35,7 @@ binary-arch: bin-libport bin-libport-dev bin-urbi bin-urbi-dev
 
 clean: clean-binary-libport clean-binary-libport-dev clean-binary-urbi clean-binary-urbi-dev
 	rm -f build-arch binary-arch build-libport build-urbi prepare_binary
+	rm -rf $(MK_DIR)/files
 	rm -rf $(LIBPORT_BUILD_DIR) $(LIBPORT_PKD_DIR)
 	rm -rf $(URBI_BUILD_DIR) $(URBI_PKD_DIR)
 
@@ -68,7 +69,6 @@ prepare_binary:
 
 bin-%: prepare_binary
 	mkdir -p $(MK_DIR)/$*/DEBIAN
-	rm -rf $(MK_DIR)/files
 	dpkg-gencontrol -p$* -P$(MK_DIR)/$*
 	dpkg-deb -b $(MK_DIR)/$* ..
 

@@ -1,5 +1,7 @@
 urbi (2.8-1) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Created from Github versions of libport and urbi
+  * 75ef583bf242ac22be4fd47f8828d661a4f54d8a libport
+  * 4df003574e9bd9527243711c60a04afa22f03999 urbi
 
  -- Michal Koutný <xm.koutny@gmail.com>  Sun, 10 Aug 2014 11:51:52 +0200
