@@ -1,3 +1,10 @@
+urbi (2.8-2) unstable; urgency=low
+
+  * Changed build type to Debug from Release
+    - Inlined functions (probably) caused race condition
+
+ -- Michal Koutný <xm.koutny@gmail.com>  Sun, 02 Nov 2014 23:40:00 +0100
+
 urbi (2.8-1) unstable; urgency=low
 
   * Created from Github versions of libport and urbi
