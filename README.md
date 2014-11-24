@@ -9,9 +9,6 @@ Wraps original Urbi SDK and libport build process in order to build Debian packa
   * The binary package was installed on Debian (sid).
   * 32-bit build was *not* tested.
 
-sources with 
-
-Web-based environment for scripting quadrocopters
 
 ## Links ##
 
